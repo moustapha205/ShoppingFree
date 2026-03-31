@@ -4,6 +4,6 @@
 }
 
 :{$PORT:8080} {
-	root * public/
+	root * /app/public
 	php_server
 }
