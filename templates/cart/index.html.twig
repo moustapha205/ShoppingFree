@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Mon Panier 🛒</h1>
+    
+    {% if items | length > 0 %}
+        <table class="table shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>Produit</th>
+                    <th>Prix Unit. TTC</th>
+                    <th>Quantité</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ (item.product.prixHt * (1 + item.product.vatRate)) | number_format(2, ',', ' ') }} €</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ (item.product.prixHt * (1 + item.product.vatRate) * item.quantity) | number_format(2, ',', ' ') }} €</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="text-end mt-4">
+            <h3>Total Général : <span class="text-primary">{{ total | number_format(2, ',', ' ') }} €</span></h3>
+            <a href="{{ path('cart_payment') }}" class="btn btn-success btn-lg px-5 shadow">
+                Payer par Carte 💳
+            </a>
+        </div>
+    {% else %}
+        <div class="alert alert-info py-4 text-center">
+            <h3>Votre panier est vide.</h3>
+            <a href="{{ path('app_home') }}" class="btn btn-primary mt-3">Retourner à la boutique</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

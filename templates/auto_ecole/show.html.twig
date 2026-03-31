@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="card p-4">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="{{ auto_ecole.imageAutoEcole }}" class="img-fluid rounded" alt="Logo">
+            </div>
+            <div class="col-md-8">
+                <h1 class="fw-bold">{{ auto_ecole.nomAutoEcole }}</h1>
+                <p class="badge bg-info text-dark">Siret: {{ auto_ecole.siretAutoEcole }}</p>
+                <hr>
+                <h3>Formateurs de l'établissement</h3>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">👨‍🏫 Jean Formateur (Exemple)</li>
+                    <li class="list-group-item">👩‍🏫 Sophie Conduite (Exemple)</li>
+                </ul>
+                <a href="{{ path('app_auto_ecole_index') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

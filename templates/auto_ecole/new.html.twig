@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New AutoEcole{% endblock %}
+
+{% block body %}
+    <h1>Create new AutoEcole</h1>
+
+    {{ include('auto_ecole/_form.html.twig') }}
+
+    <a href="{{ path('app_auto_ecole_index') }}">back to list</a>
+{% endblock %}

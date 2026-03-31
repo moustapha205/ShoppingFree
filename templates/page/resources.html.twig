@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ressources & FAQ | ShoppingFree{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="text-center fw-bold mb-5">Centre d'aide & Ressources</h1>
+
+    <div class="accordion accordion-flush shadow-sm rounded-4 overflow-hidden" id="faqAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                    Comment suivre ma commande ?
+                </button>
+            </h2>
+            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted">
+                    Une fois votre paiement validé, un numéro de suivi vous est envoyé par email. Vous pouvez aussi le retrouver dans votre espace "Mes Commandes".
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                    Quels sont les délais de remboursement ?
+                </button>
+            </h2>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted">
+                    Les remboursements sont effectués sous 5 à 7 jours ouvrés directement sur la carte ayant servi au paiement Stripe.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ShoppingFree | {{ product.name }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+
+    <a href="{{ path('app_home') }}" class="text-muted text-decoration-none small mb-4 d-inline-flex align-items-center gap-1">
+        <i class="bi bi-chevron-left"></i> Retour aux produits
+    </a>
+
+    <div class="card border-0 shadow rounded-4 overflow-hidden mx-auto mt-3" style="max-width: 900px;">
+        <div class="row g-0">
+
+            {# Colonne image #}
+            <div class="col-md-5 bg-light d-flex align-items-center justify-content-center p-4">
+                <img src="{{ product.image ? (product.image starts with 'http' ? product.image : asset(product.image)) : 'https://placehold.co/500x500?text=' ~ product.name }}"
+                     alt="{{ product.name }}"
+                     class="img-fluid rounded-3"
+                     style="max-height: 340px; object-fit: cover;">
+            </div>
+
+            {# Colonne infos #}
+            <div class="col-md-7">
+                <div class="card-body p-4 p-lg-5 d-flex flex-column h-100">
+
+                    {# Catégorie + Stock #}
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        {% if product.category %}
+                            <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 fw-semibold">
+                                <i class="bi bi-tag me-1"></i>{{ product.category }}
+                            </span>
+                        {% endif %}
+                        {% if product.quantity > 5 %}
+                            <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2">
+                                <i class="bi bi-check-circle me-1"></i>En stock
+                            </span>
+                        {% elseif product.quantity > 0 %}
+                            <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-2">
+                                <i class="bi bi-exclamation-circle me-1"></i>Plus que {{ product.quantity }}
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-2">
+                                <i class="bi bi-x-circle me-1"></i>Épuisé
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    {# Nom #}
+                    <h2 class="fw-bold mb-1">{{ product.name }}</h2>
+                    <p class="text-muted small mb-3">Réf : {{ product.sku }}</p>
+
+                    {# Prix #}
+                    <div class="mb-3 p-3 bg-light rounded-3">
+                        <div class="d-flex align-items-baseline gap-2">
+                            <span class="fs-2 fw-bold text-primary">
+                                {{ (product.prixHt * (1 + product.vatRate))|number_format(2, ',', ' ') }} €
+                            </span>
+                            <span class="text-muted small">TTC</span>
+                        </div>
+                        <div class="text-muted small">
+                            Prix HT : {{ product.prixHt|number_format(2, ',', ' ') }} €
+                            &nbsp;·&nbsp;
+                            TVA {{ (product.vatRate * 100)|number_format(0) }}%
+                        </div>
+                    </div>
+
+                    {# Description #}
+                    {% if product.description %}
+                        <div class="mb-4">
+                            <p class="fw-semibold text-dark mb-1 small text-uppercase tracking-wide" style="letter-spacing: .08em;">Description</p>
+                            <hr class="mt-0 mb-2">
+                            <p class="text-muted mb-0" style="line-height: 1.8; font-size: 0.95rem;">{{ product.description }}</p>
+                        </div>
+                    {% endif %}
+
+                    {# Bouton #}
+                    <div class="mt-auto">
+                        {% if product.quantity > 0 %}
+                            <a href="{{ path('cart_add', {id: product.id}) }}" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow-sm">
+                                <i class="bi bi-cart-plus me-2"></i> Ajouter au panier
+                            </a>
+                        {% else %}
+                            <button class="btn btn-secondary btn-lg w-100 rounded-pill fw-bold" disabled>
+                                Indisponible
+                            </button>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

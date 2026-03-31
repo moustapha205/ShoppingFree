@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Administration{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1 class="fw-bold"><i class="bi bi-speedometer2 text-primary"></i> Tableau de bord</h1>
+        <a href="{{ path('app_admin_reset_stocks') }}" class="btn btn-outline-warning rounded-pill shadow-sm">
+            <i class="bi bi-arrow-clockwise"></i> Reset Stocks
+        </a>
+    </div>
+
+    <div class="row g-4 mb-5 text-center">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h6 class="text-uppercase text-muted small fw-bold">Chiffre d'Affaires</h6>
+                <div class="display-5 fw-extrabold text-success">{{ totalCA|number_format(2, ',', ' ') }} €</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h6 class="text-uppercase text-muted small fw-bold">Ventes réalisées</h6>
+                <div class="display-5 fw-extrabold text-primary">{{ totalSalesCount }}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h6 class="text-uppercase text-muted small fw-bold">Produits en rayon</h6>
+                <div class="display-5 fw-extrabold text-info">{{ totalProducts }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">Historique des ventes</h5>
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Produit (SKU)</th>
+                                <th>Client</th>
+                                <th>Montant</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sale in sales|reverse %}
+                                <tr>
+                                    <td><span class="badge bg-light text-dark border">{{ sale.productSku }}</span></td>
+                                    <td>{{ sale.client.email }}</td>
+                                    <td class="fw-bold text-success">{{ sale.totalTtc }} €</td>
+                                </tr>
+                            {% else %}
+                                <tr><td colspan="3" class="text-center py-4">Aucune vente pour le moment.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">Alerte Stock</h5>
+                    {% for product in products %}
+                        {% if product.quantity < 10 %}
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="small fw-bold">{{ product.name }}</span>
+                            <span class="badge {{ product.quantity == 0 ? 'bg-danger' : 'bg-warning' }} rounded-pill">
+                                {{ product.quantity }} restants
+                            </span>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
