@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Commandes | ShoppingFree{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="d-flex align-items-center mb-4">
+        <i class="bi bi-bag-check fs-2 text-primary me-3"></i>
+        <h1 class="h2 fw-bold m-0">Mon Historique d'Achats</h1>
+    </div>
+
+    {% if app.user.sales is empty %}
+        <div class="card p-5 text-center shadow-sm">
+            <i class="bi bi-emoji-frown fs-1 text-muted"></i>
+            <p class="mt-3 fs-5">Vous n'avez pas encore passé de commande.</p>
+            <a href="{{ path('app_home') }}" class="btn btn-primary btn-lg mt-2">Commencer mes achats</a>
+        </div>
+    {% else %}
+        <div class="table-responsive shadow-sm rounded-3 bg-body p-3">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Référence Produit</th>
+                        <th class="text-center">Quantité</th>
+                        <th class="text-end">Total TTC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in app.user.sales|reverse %}
+                        <tr>
+                            <td><span class="badge bg-secondary">{{ sale.productSku }}</span></td>
+                            <td class="text-center fw-bold">{{ sale.quantitySold }}</td>
+                            <td class="text-end text-success fw-bold">{{ sale.totalTtc }} €</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

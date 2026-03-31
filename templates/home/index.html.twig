@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Boutique ShoppingFree{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-end mb-5">
+        <div>
+            <h1 class="fw-extrabold display-5 mb-2">Nos Produits</h1>
+            <p class="text-muted mb-0">Découvrez les dernières nouveautés high-tech.</p>
+        </div>
+        <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2">
+            {{ products|length }} Articles disponibles
+        </span>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for product in products %}
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden product-card">
+                    <div class="position-relative">
+                        <img src="{{ product.image ? (product.image starts with 'http' ? product.image : asset(product.image)) : 'https://placehold.co/400x300?text=' ~ product.name }}" class="card-img-top" alt="{{ product.name }}" style="height: 220px; object-fit: cover;">
+                        
+                        {# Badge de Stock Dynamique #}
+                        <div class="position-absolute top-0 start-0 m-3">
+                            {% if product.quantity > 5 %}
+                                <span class="badge bg-success shadow-sm">En stock</span>
+                            {% elseif product.quantity > 0 %}
+                                <span class="badge bg-warning shadow-sm">Plus que {{ product.quantity }} !</span>
+                            {% else %}
+                                <span class="badge bg-danger shadow-sm">Épuisé</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <h5 class="card-title fw-bold mb-1">{{ product.name }}</h5>
+                        <p class="text-muted small mb-3">Réf: {{ product.sku }}</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-auto">
+                            <span class="h5 fw-extrabold mb-0 text-primary">
+                                {{ (product.prixHt * (1 + product.vatRate))|number_format(2, ',', ' ') }} €
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-transparent border-0 p-4 pt-0">
+                        <div class="d-flex gap-2">
+                            <a href="{{ path('app_boutique_show', {id: product.id}) }}" class="btn btn-outline-primary flex-fill rounded-pill fw-bold py-2">
+                                <i class="bi bi-eye me-1"></i> Détail
+                            </a>
+                            {% if product.quantity > 0 %}
+                                <a href="{{ path('cart_add', {id: product.id}) }}" class="btn btn-primary flex-fill rounded-pill fw-bold py-2 shadow-sm">
+                                    <i class="bi bi-cart-plus me-1"></i> Ajouter
+                                </a>
+                            {% else %}
+                                <button class="btn btn-secondary flex-fill rounded-pill fw-bold py-2" disabled>
+                                    Indisponible
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .product-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .product-card:hover { transform: translateY(-10px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1) !important; }
+    .fw-extrabold { font-weight: 800; }
+</style>
+{% endblock %}

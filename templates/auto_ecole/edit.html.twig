@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit AutoEcole{% endblock %}
+
+{% block body %}
+    <h1>Edit AutoEcole</h1>
+
+    {{ include('auto_ecole/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_auto_ecole_index') }}">back to list</a>
+
+    {{ include('auto_ecole/_delete_form.html.twig') }}
+{% endblock %}

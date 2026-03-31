@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Nos Auto-écoles partenaires</h1>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for auto_ecole in auto_ecoles %}
+            <div class="col">
+                <div class="card h-100">
+                    <img src="{{ auto_ecole.imageAutoEcole }}" class="card-img-top" alt="Logo" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">{{ auto_ecole.nomAutoEcole }}</h5>
+                        <p class="card-text text-muted small">📍 {{ auto_ecole.siretAutoEcole }}</p>
+                        <p class="card-text">📞 {{ auto_ecole.telAutoEcole }}</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pb-3">
+                        <a href="{{ path('app_auto_ecole_show', {'id': auto_ecole.id}) }}" class="btn btn-outline-primary w-100">Voir les détails</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
