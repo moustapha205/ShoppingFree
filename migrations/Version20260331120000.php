@@ -11,7 +11,7 @@ final class Version20260331120000 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Ajout des colonnes category, description et image sur la table product';
+        return 'Add category, description and image columns to product table';
     }
 
     public function up(Schema $schema): void
