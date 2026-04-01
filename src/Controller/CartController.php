@@ -73,7 +73,7 @@ class CartController extends AbstractController
         // -------------------------------------
 
         // On initialise Stripe avec la clé secrète du .env
-        Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
+        Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY'] ?? $_SERVER['STRIPE_SECRET_KEY']);
 
         $lineItems = [];
         foreach ($panier as $id => $quantity) {
