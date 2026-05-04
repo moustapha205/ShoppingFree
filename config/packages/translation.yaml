@@ -1,3 +1,4 @@
+#Ce fichier configure le système de traduction de Symfony. La langue par défaut est l'anglais. Je n'ai pas eu à le modifier car ShoppingFree est en français uniquement.
 framework:
     default_locale: en
     translator:

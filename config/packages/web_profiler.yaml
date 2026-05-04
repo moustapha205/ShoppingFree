@@ -11,3 +11,5 @@ when@test:
         profiler:
             collect: false
             collect_serializer_data: true
+#Le web_profiler active la barre de debug en bas de mes pages uniquement en développement. 
+#Elle m'affiche les requêtes SQL exécutées, le temps de chargement et l'utilisateur connecté. En test et en production elle est complètement désactivée."

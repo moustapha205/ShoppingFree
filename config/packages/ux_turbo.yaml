@@ -2,3 +2,5 @@
 framework:
     csrf_protection:
         check_header: true
+#Ce fichier configure la protection CSRF pour Turbo — le système de navigation sans rechargement de page.
+#Il dit à Symfony de vérifier le token CSRF dans le header HTTP des requêtes Turbo au lieu du formulaire classique.

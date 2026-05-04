@@ -9,3 +9,7 @@ framework:
             - submit
             - authenticate
             - logout
+
+#Mon csrf.yaml active la protection CSRF sur tous mes formulaires automatiquement. 
+#Il protège spécifiquement 3 actions — la soumission des formulaires, la connexion et la déconnexion. 
+#Le mode stateless permet de protéger la connexion même avant qu'une session soit ouverte.

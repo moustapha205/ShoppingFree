@@ -13,15 +13,15 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class PaymentController extends AbstractController
 {
-    #[Route('/payment/success', name: 'payment_success')]
-    #[IsGranted('ROLE_USER')]
+    #[Route('/payment/success', name: 'payment_success')] //apres payement reussi via stripe
+    #[IsGranted('ROLE_USER')] 
     public function success(RequestStack $requestStack, ProductRepository $productRepo, EntityManagerInterface $em): Response 
     {
-        $session = $requestStack->getSession();
-        $panier = $session->get('panier', []);
-        $user = $this->getUser(); 
+        $session = $requestStack->getSession(); //on récupère la session de l'user
+        $panier = $session->get('panier', []);//son panier aussi par la session
+        $user = $this->getUser(); //on lite les infos de l'utilisateur connecté pour pouvoir l'associer à la vente qui va être créée, et ainsi garder une trace de quel utilisateur a acheté quels produits, ce qui est important pour les historiques de commandes, les profils clients, etc.
 
-        if (empty($panier)) {
+        if (empty($panier)) {// si le panier est vide, on affiche un message d'information à l'utilisateur et on le redirige vers la page d'accueil, car il n'y a rien à enregistrer comme vente
             $this->addFlash('info', 'Votre panier est vide.');
             return $this->redirectToRoute('app_home');
         }
@@ -45,7 +45,7 @@ class PaymentController extends AbstractController
         }
 
         $em->flush();
-        $session->remove('panier');
+        $session->remove('panier');//et on supprime le panier de la session pour que l'utilisateur puisse faire de nouveaux achats sans que les anciens restent dans le panier
 
         $this->addFlash('success', 'Paiement réussi ! Retrouvez vos achats dans "Mes Commandes".');
         return $this->redirectToRoute('app_home');

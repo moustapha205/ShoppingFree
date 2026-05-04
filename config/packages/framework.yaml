@@ -13,3 +13,6 @@ when@test:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
+            #Mon framework.yaml configure deux choses essentielles — 
+            #la clé secrète de l'application utilisée pour sécuriser les tokens CSRF et les cookies,
+            # et le système de sessions qui me permet de stocker le panier et gérer les utilisateurs connectés.

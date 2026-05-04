@@ -27,3 +27,6 @@ framework:
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async
+#Messenger gère les tâches en arrière-plan dans mon projet — principalement l'envoi d'emails après une commande.
+# Si l'envoi échoue il réessaie automatiquement 3 fois avant de mettre la tâche en erreur
+#C'est utilisé principalement pour l'envoi d'emails — quand un client passe une commande, l'email de confirmation est envoyé en arrière-plan sans faire attendre le client.

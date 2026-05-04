@@ -3,8 +3,11 @@ framework:
         # Configure how to generate URLs in non-HTTP contexts, such as CLI commands.
         # See https://symfony.com/doc/current/routing.html#generating-urls-in-commands
         default_uri: '%env(DEFAULT_URI)%'
+        #POUR FAIRE SAVOIR à SYMFONY  que l'adresse de base est par exemple shoppingfree.com — sinon quand je génère une URL dans un email ou une commande CLI, Symfony ne sait pas quelle adresse de base utiliser et génère des URL incomplètes.
 
 when@prod:
     framework:
         router:
             strict_requirements: null
+#Mon routing.yaml configure l'URL de base de mon site pour générer des liens corrects dans les emails. 
+#En production les erreurs de routes sont ignorées silencieusement pour ne pas crasher le site

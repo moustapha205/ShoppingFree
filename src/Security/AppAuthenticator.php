@@ -44,9 +44,20 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        //on recupere le panier avant la regeneration de la sesssion 
+        $panier = $request->getSession()->get('panier', []);
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+
+            //on restaure le panier dans  la nouvelle session
+            $request->getSession()->set('panier', $panier);
+            
             return new RedirectResponse($targetPath);
         }
+        //on restaure le panier apres redirection de l'user 
+        $request->getSession()->set('panier', $panier);
+            
+        
 
         // Redirection vers la page d'accueil après une connexion réussie
         return new RedirectResponse($this->urlGenerator->generate('app_home'));

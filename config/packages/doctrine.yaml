@@ -1,15 +1,16 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
+        #recupere l'url de connexion à ma base de donnée depuis le fichier .env et la transforme en configuration pour se connecter à la base de donnée
 
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
         #server_version: '16'
 
-        profiling_collect_backtrace: '%kernel.debug%'
-        use_savepoints: true
+        profiling_collect_backtrace: '%kernel.debug%'  # pour voir dans la barre de debug combien de requêtes ont été exécutées.
+        use_savepoints: true #Active les points de sauvegarde pour les transactions imbriquées en BDD — permet d'annuler une partie d'une transaction sans tout annuler.
     orm:
-        auto_generate_proxy_classes: true
+        auto_generate_proxy_classes: true #Active la génération automatique des classes proxy pour les entités Doctrine.
         enable_lazy_ghost_objects: true
         report_fields_where_declared: true
         validate_xml_mapping: true
@@ -22,6 +23,7 @@ doctrine:
                 type: attribute
                 is_bundle: false
                 dir: '%kernel.project_dir%/src/Entity'
+                #pour dire à symfony que mes entitées se trouvent dans le dossier src/entity 
                 prefix: 'App\Entity'
                 alias: App
         controller_resolver:
@@ -52,3 +54,7 @@ when@prod:
                     adapter: cache.app
                 doctrine.system_cache_pool:
                     adapter: cache.system
+
+                    #Ce fichier configure la connexion à ma BDD et dit à Doctrine où trouver mes entités. En production il active le cache pour optimiser les performances.
+                    #Le cache c'est comme mémoriser le résultat d'une requête BDD pour ne pas la refaire à chaque fois — ça accélère le site en évitant de refaire les mêmes calculs ou requêtes à chaque fois. 
+                    #En développement, on laisse le cache désactivé pour voir les changements immédiatement sans devoir vider le cache à chaque fois.

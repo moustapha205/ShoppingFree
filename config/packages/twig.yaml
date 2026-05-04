@@ -1,3 +1,6 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
     form_themes: ['bootstrap_5_layout.html.twig'] # <--- AJOUTE CETTE LIGNE
+
+    #Mon twig.yaml configure deux choses. Le dossier templates/ où sont stockées toutes mes vues. 
+    #Et le thème Bootstrap 5 que j'ai ajouté moi-même pour que tous mes formulaires Symfony soient automatiquement stylisés avec Bootstrap sans écrire de CSS supplémentaire."

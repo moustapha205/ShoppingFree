@@ -11,7 +11,7 @@ class ShopController extends AbstractController
     #[Route('/boutique', name: 'app_boutique')]
     public function index(ProductRepository $productRepository): Response
     {
-        // Equivalent de l'Option 2 de ton examen Python (Lister l'inventaire)
+        
         return $this->render('shop/index.html.twig', [
             'products' => $productRepository->findAll(),
         ]);
@@ -23,11 +23,11 @@ class ShopController extends AbstractController
         $product = $productRepository->find($id);
 
         if (!$product) {
-            throw $this->createNotFoundException('Produit introuvable.');
+            throw $this->createNotFoundException('Produit introuvable.');  //vu que ici on cherche à afficher une source ou une page qui n'existe pas du coup on utilise le createNotFoundException pour afficher une page erreur 
         }
 
         return $this->render('shop/show.html.twig', [
             'product' => $product,
         ]);
     }
-}
+}// cette page cherche à afficher une page produit depuis son id apres avoir lister tous les produits 

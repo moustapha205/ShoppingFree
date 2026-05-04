@@ -1,15 +1,17 @@
 security:
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords                 pour le hachage des mots de passe 
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        #le auto dit a symfony de choisir le meilleur algorithme de hachage disponible sur le serveur    en general bycriopt du coup j'ai pas eu à le choisir moi meme 
 
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider         pour aller chercher les utilisateurs en BDD via leurs emails 
     providers:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
                 class: App\Entity\User
                 property: email
+                #et ici on choisit l'email car deux utilisateurs ne peuvent pas avoir le meme email en BDD , c'est la référence unique pour les différencier et les retrouver lors de la connexion.
         # used to reload user from session & other features (e.g. switch_user)
 
     firewalls:
@@ -29,7 +31,7 @@ security:
 
             remember_me:
                 secret: '%kernel.secret%'
-                lifetime: 604800
+                lifetime: 604800 # c'est en seconde pour laisser l'utilisateur connecté pendant une semaine
                 path: /
                 always_remember_me: true
 
@@ -41,16 +43,24 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-
+        - { path: ^/cart, roles: ROLE_USER }
+        - { path: ^/achat, roles: ROLE_USER }
+    #cette partie c'est pour les accés control , elle dit que pour accéder à une route qui commence par /admin , l'utilisateur doit avoir le ROLE_ADMIN . Si on avait d'autres règles d'accès pour d'autres routes , elles seraient listées ici aussi et la première qui correspondrait serait appliquée.
 when@test:
     security:
+    #on reduit le tempos de hachage des mots de passe c'est à dire le cost (le nombre de tour de hachage )juste pour aller plus vite avec les test pour pas perdre de temps sachant que bycript est un algorithme de hachage lent par nature pour des raisons de sécurité . En réduisant le cost dans les tests , on peut faire les tests plus rapidement sans compromettre la sécurité en production.
         password_hashers:
             # Password hashers are resource-intensive by design to ensure security.
             # In tests, it's safe to reduce their cost to improve performance.
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
                 algorithm: auto
-                cost: 4 # Lowest possible value for bcrypt
+                #auto dit à symfony de choisir le meilleur algorithme de hachage disponible sur le serveur , en général bcrypt ou argon2i/argon2id selon la configuration du serveur. En réduisant le cost pour les tests , on peut faire les tests plus rapidement sans compromettre la sécurité en production.
+                cost: 4 # Le cost minimum de bcrypt est 4 et c'est ultra rapide pour les tests snn en prod symfony recommande 13 ou plus selon la puissance du server .
                 time_cost: 3 # Lowest possible value for argon
-                memory_cost: 10 # Lowest possible value for argon
+                memory_cost: 10 # Lowest possible value for argon                 Le firewall surveille toutes les routes de mon site.
+                # Quand un utilisateur essaie de se connecter, mon AppAuthenticator vérifie ses identifiants en BDD et gère les redirections selon que la connexion réussit ou échoue.
+                #en gros c'est lui (le firewall) ,mur de securité qui se pose  toutes ces questions(si l'email est en BDD,si le mot de passe correspond ) et c'est l'appauthenticator qui y repond en donnant les réponses (si oui ou non la connexion est réussie et où rediriger l'utilisateur ensuite).
+                #Le firewall surveille toutes les requêtes de mon site et vérifie si l'utilisateur est connecté. Si non, il le redirige vers le login. L'AppAuthenticator lui prend le relais uniquement au moment de la connexion — il vérifie l'email en BDD, compare le mot de passe hashé,
+                # valide le token CSRF et gère la redirection après connexion

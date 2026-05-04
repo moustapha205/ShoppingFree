@@ -17,3 +17,6 @@ framework:
         # Namespaced pools use the above "app" backend by default
         #pools:
             #my.dedicated.cache: null
+
+
+            #ce fichier sert de memoire pour ne pas avoir a refaire a chak fois certaines choses comme calculer ou aller chercher en BDD

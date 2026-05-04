@@ -1,3 +1,6 @@
+#Mon stripe.yaml configure Stripe comme un service Symfony. La clé secrète est stockée dans .env et jamais exposée dans le code. 
+#Grâce à l'injection de dépendances je peux utiliser Stripe directement dans mes controllers sans faire new StripeClient().
+
 services:
     stripe.client:
         class: 'Stripe\StripeClient'

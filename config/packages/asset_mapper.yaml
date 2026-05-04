@@ -3,9 +3,12 @@ framework:
         # The paths to make available to the asset mapper.
         paths:
             - assets/
-        missing_import_mode: strict
+            #Dit à Symfony : "Tous mes fichiers CSS/JS/images sont dans le dossier assets/"
+        missing_import_mode: strict #strict en developpement si un fichier est manquant ou mal referencé dans mon html , Symfony va me le signaler avec une erreur pour que je puisse corriger le problème rapidement pendant le développement.
 
 when@prod:
     framework:
         asset_mapper:
             missing_import_mode: warn
+            #warn : En revanche , en production , on peut mettre warn pour que Symfony affiche juste un avertissement dans les logs sans interrompre l'exécution du site , ce qui est plus tolérant pour les erreurs mineures de référencement des assets qui pourraient survenir en production sans causer de gros problèmes pour les utilisateurs.
+#C'est le système de Symfony qui gère mes fichiers CSS, JavaScript et images — comment ils sont chargés dans mon HTML.

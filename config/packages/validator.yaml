@@ -9,3 +9,5 @@ when@test:
     framework:
         validation:
             not_compromised_password: false
+#C'est le système de validation de Symfony — il vérifie que les données saisies dans les formulaires sont correctes avant de les enregistrer en BDD
+#c'est off en mode test pour pas ralentir les tests

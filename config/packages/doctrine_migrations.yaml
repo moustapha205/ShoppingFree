@@ -3,4 +3,7 @@ doctrine_migrations:
         # namespace is arbitrary but should be different from App\Migrations
         # as migrations classes should NOT be autoloaded
         'DoctrineMigrations': '%kernel.project_dir%/migrations'
-    enable_profiler: false
+    enable_profiler: false  
+    #Ce fichier configure simplement où Doctrine stocke mes fichiers de migration — 
+    #dans le dossier migrations/ à la racine du projet. 
+    #C'est un fichier généré automatiquement par Symfony que je n'ai pas eu à modifier.

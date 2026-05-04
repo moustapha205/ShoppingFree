@@ -2,14 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\Product;
-use App\Repository\ProductRepository;
-use App\Repository\SaleRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Entity\Product;// pour pouvoir utiliser l'entité Product dans ce contrôleur, notamment pour créer de nouveaux produits ou mettre à jour les produits existants dans la base de données. En important cette classe, on peut ensuite instancier des objets Product et manipuler leurs propriétés et méthodes pour gérer les produits de la boutique en ligne. 
+use App\Repository\ProductRepository;// pour appeler le repertoire des produits 
+use App\Repository\SaleRepository;//pour apppeler le repertoire des ventes 
+use Doctrine\ORM\EntityManagerInterface;// pour faire des sauvegardes dans la base de données  
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;// pour pouvoir utiliser les fonctionnalités de base d'un contrôleur Symfony, comme la gestion des requêtes et des réponses, le rendu de templates Twig, la redirection vers d'autres routes, etc. En étendant AbstractController, on hérite de ces fonctionnalités et on peut les utiliser facilement dans les méthodes de ce contrôleur pour gérer les actions liées à l'administration de la boutique en ligne.
+use Symfony\Component\HttpFoundation\Response;// pour gérer les réponses HTTP, notamment pour retourner des pages HTML rendues par Twig ou pour rediriger l'utilisateur vers d'autres routes après certaines actions. En important cette classe, on peut ensuite utiliser la classe Response pour créer des objets de réponse et les retourner à la fin de chaque méthode du contrôleur, ce qui permet de contrôler le contenu et le comportement des réponses envoyées au client.
+use Symfony\Component\Routing\Attribute\Route;// pour définir les routes associées à chaque méthode du contrôleur, ce qui permet de gérer les URL et les actions correspondantes dans l'application. En utilisant l'attribut Route, on peut spécifier l'URL, le nom de la route et les méthodes HTTP autorisées pour chaque action du contrôleur, ce qui facilite la gestion des routes et la navigation dans l'application.
+use Symfony\Component\Security\Http\Attribute\IsGranted;// pour sécuriser l'accès à ce contrôleur en spécifiant que seules les utilisateurs ayant le rôle ROLE_ADMIN peuvent accéder aux méthodes de ce contrôleur. En utilisant l'attribut IsGranted, on peut restreindre l'accès à certaines parties de l'application en fonction des rôles et des permissions des utilisateurs, ce qui permet de protéger les fonctionnalités sensibles et d'assurer la sécurité de l'application. Dans ce cas, en appliquant IsGranted('ROLE_ADMIN') au niveau du contrôleur, on s'assure que seules les personnes ayant le rôle d'administrateur peuvent accéder à toutes les actions définies dans ce contrôleur, ce qui est essentiel pour la gestion de la boutique en ligne.
 
 #[Route('/admin')]
 #[IsGranted('ROLE_ADMIN')] // Sécurité totale : Seul l'admin peut entrer dans ce contrôleur
@@ -57,9 +57,9 @@ class AdminController extends AbstractController
     {
         // Vider tous les produits existants
         foreach ($productRepo->findAll() as $p) {
-            $em->remove($p);
+            $em->remove($p); //on supprime tous les produits un par un après la recup
         }
-        $em->flush();
+        $em->flush(); //permet d'enregistrer la suppression en base de données 
 
         $catalog = [
             ['name' => 'iPhone 16 Pro',        'sku' => 'APL-IP16P',  'price' => 1199, 'category' => 'Smartphones', 'image' => '/images/products/iphone16pro.png',  'description' => 'Doté du chip A18 Pro et d\'un système de caméra professionnelle 48 MP, l\'iPhone 16 Pro offre des performances exceptionnelles. Écran Super Retina XDR 6,3 pouces ProMotion 120 Hz, design en titane et autonomie améliorée pour une expérience sans compromis.'],
@@ -74,27 +74,27 @@ class AdminController extends AbstractController
             ['name' => 'Samsung S24 Ultra',     'sku' => 'SAM-S24U',   'price' => 1349, 'category' => 'Smartphones', 'image' => 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=600&q=80', 'description' => 'Le Galaxy S24 Ultra est le summum de la gamme Samsung. S Pen intégré, caméra 200 MP, zoom optique 10x, écran Dynamic AMOLED 2X 6,8 pouces et Snapdragon 8 Gen 3 pour des performances hors normes au quotidien.'],
             ['name' => 'GoPro Hero 12',         'sku' => 'GOP-H12',    'price' => 399,  'category' => 'Caméras',     'image' => 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=600&q=80', 'description' => 'La GoPro HERO 12 capture vos aventures en vidéo 5.3K60 et photo 27 MP avec HyperSmooth 6.0 pour une stabilisation parfaite. Étanche jusqu\'à 10m, robuste et polyvalente pour tous vos exploits sportifs.'],
             ['name' => 'DJI Mini 4 Pro',        'sku' => 'DJI-M4P',    'price' => 799,  'category' => 'Drones',      'image' => 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600&q=80', 'description' => 'Le DJI Mini 4 Pro est un drone compact de 249g offrant vidéo 4K/60fps HDR, détection d\'obstacles omnidirectionnelle et 34 minutes d\'autonomie. Idéal pour les créateurs de contenu en quête de qualité cinématographique.'],
-        ];
+        ]; // et là on remnplit avec un tableau de produits qui sont pas encore en base de données 
 
-        foreach ($catalog as $item) {
+        foreach ($catalog as $item) {//pour chaque produit du tableau on remplit ses données et on le persist pour preparer l'objet à enregistrer en base de données 
             $product = new Product();
             $product->setName($item['name']);
             $product->setSku($item['sku']);
-            $product->setPrixHt($item['price'] / 1.2);
+            $product->setPrixHt($item['price'] / 1.2);//Parce que les prix dans le catalogue sont TTC. Pour avoir le prix HT on divise par 1.2 (TVA 20%).
             $product->setVatRate(0.20);
-            $product->setQuantity(rand(5, 50));
+            $product->setQuantity(rand(5, 50));// stock aleatoire entre 5 et 50
             $product->setCategory($item['category']);
             $product->setDescription($item['description']);
             $product->setImage($item['image']);
             $em->persist($product);
         }
 
-        $em->flush();
+        $em->flush();// on l'enregistre eb BDD
 
         $this->addFlash('success', 'Boutique réinitialisée avec 12 produits propres !');
         return $this->redirectToRoute('app_home');
     }
-
+//mettre à jour les descriptions sans les supprimer 
     #[Route('/update-descriptions', name: 'app_admin_update_descriptions')]
     public function updateDescriptions(ProductRepository $productRepo, EntityManagerInterface $em): Response
     {
@@ -112,26 +112,27 @@ class AdminController extends AbstractController
             'GOP-H12'    => ['category' => 'Caméras',     'image' => 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=600&q=80', 'description' => 'La GoPro HERO 12 capture vos aventures en vidéo 5.3K60 et photo 27 MP avec HyperSmooth 6.0 pour une stabilisation parfaite. Étanche jusqu\'à 10m, robuste et polyvalente pour tous vos exploits sportifs.'],
             'DJI-M4P'    => ['category' => 'Drones',      'image' => 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600&q=80', 'description' => 'Le DJI Mini 4 Pro est un drone compact de 249g offrant vidéo 4K/60fps HDR, détection d\'obstacles omnidirectionnelle et 34 minutes d\'autonomie. Idéal pour les créateurs de contenu en quête de qualité cinématographique.'],
         ];
+        //si y'a pas de 'name' dans data c'est que son nom est dja correcte en bdd 
 
-        $products = $productRepo->findAll();
+        $products = $productRepo->findAll();//pour recuperer les produits existants 
         $existingSkus = [];
         foreach ($products as $product) {
             $sku = $product->getSku();
             $existingSkus[] = $sku;
-            if (isset($data[$sku])) {
-                if (isset($data[$sku]['name'])) {
+            if (isset($data[$sku])) {//On vérifie si ce SKU existe dans notre tableau $data (la liste des mises à jour). Si oui → on met à jour ce produit.//Le SKU c'est la référence unique d'un produit — comme un code-barres. On s'en sert comme clé pour trouver quel produit mettre à jour.
+                if (isset($data[$sku]['name'])) {//On vérifie en plus si une nouvelle valeur de name existe pour ce SKU. Pourquoi cette vérification supplémentaire ? Parce que certains produits dans $data n'ont pas de clé name — comme le MacBook Air qui garde son nom existant. On ne met à jour le nom que si une nouvelle valeur est fournie.
                     $product->setName($data[$sku]['name']);
                 }
                 $product->setCategory($data[$sku]['category']);
                 $product->setDescription($data[$sku]['description']);
-                $product->setImage($data[$sku]['image']);
+                $product->setImage($data[$sku]['image']);//on met a jour les valeurs du produit et pas besoin de PERSIST parcequ'il existe deja en BDD
             }
         }
 
         // Créer les produits manquants (ex: iPhone 17 Pro)
         foreach ($data as $sku => $item) {
-            if (!in_array($sku, $existingSkus) && isset($item['name'])) {
-                $product = new \App\Entity\Product();
+            if (!in_array($sku, $existingSkus) && isset($item['name'])) {// SI LE sku du produit  N'EST PòAS DANS LA liste des skus ewn BDD et si ce produit a un nom defini dans $data 
+                $product = new \App\Entity\Product();// si ces conditions sont vraies on cree un nouveau produit 
                 $product->setSku($sku);
                 $product->setName($item['name']);
                 $product->setPrixHt(1399 / 1.2);
@@ -140,13 +141,13 @@ class AdminController extends AbstractController
                 $product->setCategory($item['category']);
                 $product->setDescription($item['description']);
                 $product->setImage($item['image']);
-                $em->persist($product);
+                $em->persist($product);//et là on prepare le nouveau tableau des produits pour la sauvegarde en BDD
             }
         }
 
-        $em->flush();
+        $em->flush();//LA SAUVEGARDE EN BDD 
 
         $this->addFlash('success', 'Descriptions et catégories mises à jour !');
         return $this->redirectToRoute('app_home');
     }
-}
+}// ici on mis un seul persist et flush vers la fin parceque mettre à jour la boutique est considéré ici comme modifer ce qui existe et créer ce qui manque c'est comme faire toutes mes courses en magasin et ne payer qu'une seule fois à la fin 

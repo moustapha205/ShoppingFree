@@ -1,3 +1,6 @@
+#Monolog gère les logs de mon application. En développement il enregistre tout pour débugger. 
+#En production il utilise le mode fingers_crossed — il n'enregistre que les erreurs graves pour ne pas surcharger les logs
+
 monolog:
     channels:
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists

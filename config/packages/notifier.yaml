@@ -1,3 +1,4 @@
+#Mon notifier.yaml envoie des notifications par email sur mon adresse personnelle pour tous les niveaux d'urgence — de la simple information jusqu'aux erreurs critiques
 framework:
     notifier:
         chatter_transports:
@@ -9,4 +10,4 @@ framework:
             medium: ['email']
             low: ['email']
         admin_recipients:
-            - { email: admin@example.com }
+            - { email: kanem1468@gmail.com }
