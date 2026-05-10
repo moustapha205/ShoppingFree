@@ -1,8 +1,8 @@
 FROM php:8.2-apache
 
 RUN apt-get update && apt-get install -y \
-    git zip unzip libpq-dev libzip-dev \
-    && docker-php-ext-install pdo pdo_mysql zip
+    git zip unzip libpq-dev libzip-dev libicu-dev \
+    && docker-php-ext-install pdo pdo_mysql zip intl
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
