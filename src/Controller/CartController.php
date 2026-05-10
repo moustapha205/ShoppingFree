@@ -57,16 +57,28 @@ class CartController extends AbstractController// pour dire que ce controller h�
     {
         $session = $requestStack->getSession();//session de l'user
         $panier = $session->get('panier', []);//le panier de l'user a partir de la session
-        
+
+        // Nettoyer les produits qui n'existent plus en base
+        foreach ($panier as $id => $quantity) {// cette partie vu que dans mon projet le panier est lié à la session qui dure une semaine pour tout le monde
+        //   si des produits sont supprimés en base de données pendant que les utilisateurs ont encore ces produits dans leur panier,
+        //  cela peut causer des problèmes lors du processus de paiement, car Stripe ne pourra pas traiter les produits qui n'existent plus.
+        //  En nettoyant le panier avant de procéder au paiement, on s'assure que seuls les produits valides et disponibles sont inclus dans la session de paiement Stripe,
+        //  ce qui évite les erreurs et garantit une expérience utilisateur fluide.
+            if (!$productRepo->find($id)) {
+                unset($panier[$id]);
+            }
+        }
+        $session->set('panier', $panier);
+
         if (empty($panier)) {//empty est une fonctiuon php pour vérifier si la liste (le panier ) es vide (true)
-            return $this->redirectToRoute('app_cart'); //donc ici si le panier est vide on redirige l'user à la page 
+            return $this->redirectToRoute('app_cart'); //donc ici si le panier est vide on redirige l'user à la page
         }
 
         // --- SÉCURITÉ STOCK AVANT PAIEMENT ---
         foreach ($panier as $id => $quantity) {
             $product = $productRepo->find($id);
-            if (!$product || $product->getQuantity() < $quantity) {
-                $this->addFlash('danger', 'Désolé, le stock de ' . ($product ? $product->getName() : 'produit inconnu') . ' est épuisé ou insuffisant.'); //au milieu dans la () on a une condition ternaire condition?si vrai:si faux
+            if ($product->getQuantity() < $quantity) {
+                $this->addFlash('danger', 'Désolé, le stock de ' . $product->getName() . ' est épuisé ou insuffisant.');
                 return $this->redirectToRoute('app_cart');
             }
         }

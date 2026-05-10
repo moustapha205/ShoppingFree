@@ -47,8 +47,7 @@ class PaymentController extends AbstractController
         $em->flush();
         $session->remove('panier');//et on supprime le panier de la session pour que l'utilisateur puisse faire de nouveaux achats sans que les anciens restent dans le panier
 
-        $this->addFlash('success', 'Paiement réussi ! Retrouvez vos achats dans "Mes Commandes".');
-        return $this->redirectToRoute('app_home');
+        return $this->render('payment/success.html.twig');
     }
     #[Route('/payment/cancel', name: 'payment_cancel')]
     public function cancel(): Response
