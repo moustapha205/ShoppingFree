@@ -1,0 +1,19 @@
+FROM php:8.2-apache
+
+RUN apt-get update && apt-get install -y \
+    git zip unzip libpq-dev libzip-dev \
+    && docker-php-ext-install pdo pdo_mysql zip
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+
+COPY . .
+
+RUN composer install --no-dev --optimize-autoloader
+
+RUN echo "DocumentRoot /var/www/html/public" >> /etc/apache2/sites-enabled/000-default.conf
+
+EXPOSE 80
+
+CMD ["apache2-foreground"]
