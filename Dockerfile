@@ -10,10 +10,13 @@ WORKDIR /var/www/html
 
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader
+RUN APP_ENV=prod composer install --no-dev --optimize-autoloader --no-scripts
 
 RUN echo "DocumentRoot /var/www/html/public" >> /etc/apache2/sites-enabled/000-default.conf
 
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+CMD ["/usr/local/bin/docker-entrypoint.sh"]
