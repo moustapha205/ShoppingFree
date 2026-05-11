@@ -10,6 +10,8 @@ WORKDIR /var/www/html
 
 COPY . .
 
+RUN echo "APP_ENV=prod\nAPP_DEBUG=0\nAPP_SECRET=placeholder" > /var/www/html/.env
+
 RUN APP_ENV=prod composer install --no-dev --optimize-autoloader --no-scripts
 
 RUN echo "DocumentRoot /var/www/html/public" >> /etc/apache2/sites-enabled/000-default.conf
