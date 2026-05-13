@@ -52,6 +52,42 @@ class CartController extends AbstractController// pour dire que ce controller hÃ
         return $this->redirectToRoute('app_home');
     }
 
+    #[Route('/cart/increase/{id}', name: 'cart_increase')]
+    public function increase(int $id, RequestStack $requestStack, ProductRepository $productRepo): Response
+    {
+        $session = $requestStack->getSession();
+        $panier = $session->get('panier', []);
+        $product = $productRepo->find($id);
+        $currentQtyInCart = $panier[$id] ?? 0;
+
+        if ($product && $currentQtyInCart < $product->getQuantity()) {
+            $panier[$id] = $currentQtyInCart + 1;
+            $session->set('panier', $panier);
+        } else {
+            $this->addFlash('danger', 'Plus de stock disponible pour ce produit !');
+        }
+
+        return $this->redirectToRoute('app_cart');
+    }
+
+    #[Route('/cart/decrease/{id}', name: 'cart_decrease')]
+    public function decrease(int $id, RequestStack $requestStack): Response
+    {
+        $session = $requestStack->getSession();
+        $panier = $session->get('panier', []);
+
+        if (isset($panier[$id])) {
+            if ($panier[$id] > 1) {
+                $panier[$id]--;
+            } else {
+                unset($panier[$id]);
+            }
+            $session->set('panier', $panier);
+        }
+
+        return $this->redirectToRoute('app_cart');
+    }
+
     #[Route('/cart/payment', name: 'cart_payment')]
     public function payment(RequestStack $requestStack, ProductRepository $productRepo): Response
     {

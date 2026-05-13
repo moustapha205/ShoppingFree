@@ -19,7 +19,11 @@
                     <tr>
                         <td>{{ item.product.name }}</td>
                         <td>{{ (item.product.prixHt * (1 + item.product.vatRate)) | number_format(2, ',', ' ') }} €</td>
-                        <td>{{ item.quantity }}</td>
+                        <td>
+                            <a href="{{ path('cart_decrease', {id: item.product.id}) }}" class="btn btn-sm btn-outline-secondary">−</a>
+                            <span class="mx-2">{{ item.quantity }}</span>
+                            <a href="{{ path('cart_increase', {id: item.product.id}) }}" class="btn btn-sm btn-outline-secondary">+</a>
+                        </td>
                         <td>{{ (item.product.prixHt * (1 + item.product.vatRate) * item.quantity) | number_format(2, ',', ' ') }} €</td>
                     </tr>
                 {% endfor %}
