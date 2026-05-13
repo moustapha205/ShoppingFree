@@ -1,0 +1,156 @@
+{#
+    admin_product_new.html.twig
+    Cette page affiche le formulaire pour ajouter un NOUVEAU produit.
+    L'admin remplit tous les champs et soumet le formulaire.
+    Le contrôleur AdminProductController::adminProductNew() gère la soumission.
+#}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin — Ajouter un produit{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            {# ============================================================ #}
+            {# EN-TÊTE                                                        #}
+            {# ============================================================ #}
+            <div class="d-flex align-items-center mb-4 gap-3">
+                {# Bouton retour vers la liste #}
+                <a href="{{ path('app_admin_products_list') }}"
+                   class="btn btn-outline-secondary rounded-circle"
+                   style="width: 42px; height: 42px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
+                <div>
+                    <h1 class="fw-bold mb-0">
+                        <i class="bi bi-plus-circle-fill text-primary me-2"></i>
+                        Ajouter un produit
+                    </h1>
+                    <p class="text-muted mb-0 small">Remplis tous les champs pour créer un nouveau produit.</p>
+                </div>
+            </div>
+
+            {# ============================================================ #}
+            {# MESSAGES FLASH (erreurs éventuelles)                          #}
+            {# ============================================================ #}
+            {% for type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }} alert-dismissible fade show rounded-3" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            {# ============================================================ #}
+            {# CARTE FORMULAIRE                                               #}
+            {# ============================================================ #}
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4 p-lg-5">
+
+                    {# form_start() : génère la balise <form> avec method="POST" et le token CSRF automatique #}
+                    {{ form_start(form) }}
+
+                    {# ---- Section identité du produit ---- #}
+                    <h5 class="fw-bold mb-3 text-uppercase" style="font-size: 0.8rem; letter-spacing: .1em; color: #6c757d;">
+                        <i class="bi bi-tag me-1"></i> Identité du produit
+                    </h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-8">
+                            {# form_label() : affiche le label du champ "name" #}
+                            {{ form_label(form.name) }}
+                            {# form_widget() : affiche le champ HTML lui-même (input, select, etc.) #}
+                            {{ form_widget(form.name) }}
+                            {# form_errors() : affiche les messages d'erreur de validation si le champ est invalide #}
+                            {{ form_errors(form.name) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_label(form.sku) }}
+                            {{ form_widget(form.sku) }}
+                            {{ form_errors(form.sku) }}
+                        </div>
+                    </div>
+
+                    {# ---- Section prix & stock ---- #}
+                    <h5 class="fw-bold mb-3 text-uppercase" style="font-size: 0.8rem; letter-spacing: .1em; color: #6c757d;">
+                        <i class="bi bi-currency-euro me-1"></i> Prix & Stock
+                    </h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            {{ form_label(form.prix_ht) }}
+                            <div class="input-group"> {# input-group pour ajouter le symbole € à droite #}
+                                {{ form_widget(form.prix_ht) }}
+                                <span class="input-group-text">€ HT</span>
+                            </div>
+                            {{ form_errors(form.prix_ht) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_label(form.vat_rate) }}
+                            <div class="input-group">
+                                {{ form_widget(form.vat_rate) }}
+                                <span class="input-group-text">TVA</span>
+                            </div>
+                            {{ form_errors(form.vat_rate) }}
+                            <div class="form-text">0.20 = 20%, 0.055 = 5.5%</div>
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_label(form.quantity) }}
+                            <div class="input-group">
+                                {{ form_widget(form.quantity) }}
+                                <span class="input-group-text">unités</span>
+                            </div>
+                            {{ form_errors(form.quantity) }}
+                        </div>
+                    </div>
+
+                    {# ---- Section catégorie & image ---- #}
+                    <h5 class="fw-bold mb-3 text-uppercase" style="font-size: 0.8rem; letter-spacing: .1em; color: #6c757d;">
+                        <i class="bi bi-grid me-1"></i> Catégorie & Image
+                    </h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            {{ form_label(form.category) }}
+                            {{ form_widget(form.category) }}
+                            {{ form_errors(form.category) }}
+                        </div>
+                        <div class="col-md-8">
+                            {{ form_label(form.image) }}
+                            {{ form_widget(form.image) }}
+                            {{ form_errors(form.image) }}
+                            <div class="form-text">Colle une URL d'image (Unsplash, ton serveur, etc.)</div>
+                        </div>
+                    </div>
+
+                    {# ---- Section description ---- #}
+                    <h5 class="fw-bold mb-3 text-uppercase" style="font-size: 0.8rem; letter-spacing: .1em; color: #6c757d;">
+                        <i class="bi bi-card-text me-1"></i> Description
+                    </h5>
+                    <div class="mb-4">
+                        {{ form_label(form.description) }}
+                        {{ form_widget(form.description) }}
+                        {{ form_errors(form.description) }}
+                    </div>
+
+                    {# ---- Boutons d'action ---- #}
+                    <div class="d-flex gap-3 pt-2">
+                        <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold shadow-sm">
+                            <i class="bi bi-check-lg me-1"></i> Ajouter le produit
+                        </button>
+                        <a href="{{ path('app_admin_products_list') }}" class="btn btn-outline-secondary rounded-pill px-4">
+                            Annuler
+                        </a>
+                    </div>
+
+                    {# form_end() : ferme la balise </form> et ajoute les champs cachés restants (CSRF) #}
+                    {{ form_end(form) }}
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

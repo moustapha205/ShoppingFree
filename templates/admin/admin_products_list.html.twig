@@ -1,0 +1,178 @@
+{#
+    admin_products_list.html.twig
+    Cette page liste tous les produits de la boutique pour l'admin.
+    L'admin peut voir, modifier ou supprimer chaque produit, et en ajouter un nouveau.
+#}
+
+{% extends 'base.html.twig' %} {# on hérite du layout de base (navbar, footer, etc.) #}
+
+{% block title %}Admin — Liste des produits{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+
+    {# ============================================================ #}
+    {# TITRE + BOUTON AJOUTER                                        #}
+    {# ============================================================ #}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">
+                <i class="bi bi-box-seam text-primary me-2"></i>
+                Gestion des produits
+            </h1>
+            <p class="text-muted mb-0">{{ products|length }} produit(s) dans la boutique</p>
+        </div>
+
+        {# Bouton pour aller sur la page d'ajout d'un nouveau produit #}
+        <a href="{{ path('app_admin_product_new') }}" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> Ajouter un produit
+        </a>
+    </div>
+
+    {# ============================================================ #}
+    {# MESSAGES FLASH (succès, erreur)                               #}
+    {# Ces messages sont envoyés depuis le contrôleur avec addFlash() #}
+    {# ============================================================ #}
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }} alert-dismissible fade show rounded-3 shadow-sm" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {# ============================================================ #}
+    {# TABLEAU DES PRODUITS                                          #}
+    {# ============================================================ #}
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th style="width: 70px;">Image</th>
+                            <th>Nom</th>
+                            <th>SKU</th>
+                            <th>Catégorie</th>
+                            <th>Prix HT</th>
+                            <th>TVA</th>
+                            <th>Prix TTC</th>
+                            <th>Stock</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {# On boucle sur chaque produit envoyé depuis le contrôleur #}
+                        {% for product in products %}
+                            <tr>
+                                {# Miniature de l'image du produit #}
+                                <td>
+                                    {% if product.image %}
+                                        <img src="{{ product.image }}" alt="{{ product.name }}"
+                                             class="rounded-2 object-fit-cover"
+                                             style="width: 55px; height: 55px;">
+                                    {% else %}
+                                        {# Si pas d'image : on affiche une icône de remplacement #}
+                                        <div class="rounded-2 bg-light d-flex align-items-center justify-content-center"
+                                             style="width: 55px; height: 55px;">
+                                            <i class="bi bi-image text-muted fs-4"></i>
+                                        </div>
+                                    {% endif %}
+                                </td>
+
+                                {# Nom du produit #}
+                                <td class="fw-semibold">{{ product.name }}</td>
+
+                                {# SKU = référence unique #}
+                                <td><code class="text-primary">{{ product.sku }}</code></td>
+
+                                {# Catégorie avec badge coloré #}
+                                <td>
+                                    {% if product.category %}
+                                        <span class="badge bg-secondary rounded-pill">{{ product.category }}</span>
+                                    {% else %}
+                                        <span class="text-muted fst-italic">Non définie</span>
+                                    {% endif %}
+                                </td>
+
+                                {# Prix HT formaté avec 2 décimales #}
+                                <td>{{ product.prixHt|number_format(2, ',', ' ') }} €</td>
+
+                                {# Taux de TVA en pourcentage #}
+                                <td>{{ (product.vatRate * 100)|number_format(0) }} %</td>
+
+                                {# Prix TTC calculé : prix_ht × (1 + vat_rate) #}
+                                <td class="fw-bold text-primary">
+                                    {{ (product.prixHt * (1 + product.vatRate))|number_format(2, ',', ' ') }} €
+                                </td>
+
+                                {# Badge stock avec couleur selon la quantité #}
+                                <td>
+                                    {% if product.quantity > 10 %}
+                                        <span class="badge bg-success rounded-pill">{{ product.quantity }} en stock</span>
+                                    {% elseif product.quantity > 0 %}
+                                        <span class="badge bg-warning text-dark rounded-pill">Plus que {{ product.quantity }} !</span>
+                                    {% else %}
+                                        <span class="badge bg-danger rounded-pill">Épuisé</span>
+                                    {% endif %}
+                                </td>
+
+                                {# Boutons MODIFIER et SUPPRIMER #}
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        {# Bouton MODIFIER : redirige vers le formulaire d'édition #}
+                                        <a href="{{ path('app_admin_product_edit', {'id': product.id}) }}"
+                                           class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                            <i class="bi bi-pencil me-1"></i> Modifier
+                                        </a>
+
+                                        {# Bouton SUPPRIMER : utilise un formulaire POST pour la sécurité #}
+                                        {# Un simple lien GET pourrait être déclenché par accident #}
+                                        <form method="POST"
+                                              action="{{ path('app_admin_product_delete', {'id': product.id}) }}"
+                                              onsubmit="return confirm('Supprimer « {{ product.name }} » ? Cette action est irréversible.');">
+
+                                            {# Token CSRF : protège contre les attaques de type CSRF #}
+                                            {# Le contrôleur vérifie ce token avant de supprimer #}
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('delete-product-' ~ product.id) }}">
+
+                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                                <i class="bi bi-trash me-1"></i> Supprimer
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            {# Si le tableau $products est vide, on affiche ce message #}
+                            <tr>
+                                <td colspan="9" class="text-center py-5 text-muted fst-italic">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    Aucun produit en base de données.<br>
+                                    <a href="{{ path('app_admin_product_new') }}" class="btn btn-primary rounded-pill mt-3">
+                                        <i class="bi bi-plus-lg me-1"></i> Ajouter le premier produit
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================ #}
+    {# LIEN RETOUR DASHBOARD                                         #}
+    {# ============================================================ #}
+    <div class="mt-4">
+        <a href="{{ path('app_admin_dashboard') }}" class="btn btn-outline-secondary rounded-pill">
+            <i class="bi bi-arrow-left me-1"></i> Retour au dashboard
+        </a>
+    </div>
+
+</div>
+{% endblock %}
