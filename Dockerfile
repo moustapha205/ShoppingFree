@@ -12,7 +12,7 @@ COPY . .
 
 RUN echo "APP_ENV=prod\nAPP_DEBUG=0\nAPP_SECRET=placeholder" > /var/www/html/.env
 
-RUN APP_ENV=prod composer install --no-dev --optimize-autoloader --no-scripts
+RUN APP_ENV=prod composer install --no-dev --optimize-autoloader
 
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-enabled/000-default.conf \
     && echo '<Directory /var/www/html/public>\n    AllowOverride All\n    Require all granted\n</Directory>' >> /etc/apache2/sites-enabled/000-default.conf \
