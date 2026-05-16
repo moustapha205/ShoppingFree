@@ -16,6 +16,10 @@ WORKDIR /app
 
 COPY . .
 
+# Fichier .env minimal requis par Symfony Runtime au démarrage
+# Les vraies valeurs (DATABASE_URL, APP_SECRET...) sont injectées par Railway via variables d'environnement
+RUN printf 'APP_ENV=prod\nAPP_DEBUG=0\nAPP_SECRET=placeholder\n' > /app/.env
+
 # Composer install : COMPOSER_ALLOW_SUPERUSER pour autoriser les plugins (symfony/runtime)
 # --no-scripts car les scripts Symfony (cache:clear, assets:install) nécessitent la BDD
 RUN COMPOSER_ALLOW_SUPERUSER=1 APP_ENV=prod composer install \
