@@ -1,21 +1,23 @@
+{# page inscription - formulaire Symfony genere automatiquement #}
 {% extends 'base.html.twig' %}
 
-{% block title %}S'inscrire - OttoEtKhol{% endblock %}
+{% block title %}S'inscrire - ShoppingFree{% endblock %}
 
 {% block body %}
 <div class="row justify-content-center">
     <div class="col-md-6">
         <div class="card shadow-lg p-4 mt-5 border-0" style="border-radius: 15px;">
-            <h1 class="text-center mb-4 fw-bold text-dark">Inscription Élève</h1>
+            <h1 class="text-center mb-4 fw-bold text-dark">Créer un compte</h1>
 
+            {# form_start/end genere les balises form avec action et method #}
             {{ form_start(registrationForm) }}
                 <div class="mb-3">
                     {{ form_row(registrationForm.email, {
                         'label': 'Votre Email',
-                        'attr': {'class': 'form-control', 'placeholder': 'exemple@otto.fr'}
+                        'attr': {'class': 'form-control', 'placeholder': 'exemple@email.fr'}
                     }) }}
                 </div>
-                
+
                 <div class="mb-3">
                     {{ form_row(registrationForm.plainPassword, {
                         'label': 'Créer un mot de passe',
@@ -23,7 +25,7 @@
                     }) }}
                 </div>
 
-                {# Bloc pour les conditions d'utilisation déjà existantes dans votre projet #}
+                {# case a cocher pour accepter les CGU #}
                 <div class="mb-4 p-3 bg-light rounded border">
                     <div class="form-check d-flex align-items-center">
                         {{ form_widget(registrationForm.agreeTerms, {
@@ -36,12 +38,11 @@
                     {{ form_errors(registrationForm.agreeTerms) }}
                 </div>
 
-                {# Le bouton bleu "Primary" avec la bordure noire demandée #}
                 <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold border border-dark border-3 shadow-sm">
                      S'INSCRIRE MAINTENANT
                 </button>
             {{ form_end(registrationForm) }}
-            
+
             <div class="text-center mt-3">
                 <small class="text-muted">Déjà membre ? <a href="{{ path('app_login') }}" class="text-decoration-none">Se connecter</a></small>
             </div>
@@ -50,7 +51,6 @@
 </div>
 
 <style>
-    /* Style pour harmoniser le bouton bleu avec votre Navbar */
     .btn-primary {
         background-color: #0d6efd;
         transition: all 0.2s ease-in-out;

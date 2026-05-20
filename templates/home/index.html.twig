@@ -1,9 +1,12 @@
+{# page d'accueil - hérite du layout de base (navbar + footer) #}
 {% extends 'base.html.twig' %}
 
+{# titre affiché dans l'onglet du navigateur #}
 {% block title %}Boutique ShoppingFree{% endblock %}
 
 {% block body %}
 <div class="container py-5">
+    {# entete : titre + badge avec le nombre de produits #}
     <div class="d-flex justify-content-between align-items-end mb-5">
         <div>
             <h1 class="fw-extrabold display-5 mb-2">Nos Produits</h1>
@@ -14,14 +17,16 @@
         </span>
     </div>
 
+    {# grille de produits - 4 colonnes sur grand ecran #}
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         {% for product in products %}
             <div class="col">
                 <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden product-card">
                     <div class="position-relative">
+                        {# image du produit, si pas d'image on met un placeholder #}
                         <img src="{{ product.image ? (product.image starts with 'http' ? product.image : asset(product.image)) : 'https://placehold.co/400x300?text=' ~ product.name }}" class="card-img-top" alt="{{ product.name }}" style="height: 220px; object-fit: cover;">
-                        
-                        {# Badge de Stock Dynamique #}
+
+                        {# badge stock : vert / orange / rouge selon la quantite #}
                         <div class="position-absolute top-0 start-0 m-3">
                             {% if product.quantity > 5 %}
                                 <span class="badge bg-success shadow-sm">En stock</span>
@@ -36,7 +41,8 @@
                     <div class="card-body p-4">
                         <h5 class="card-title fw-bold mb-1">{{ product.name }}</h5>
                         <p class="text-muted small mb-3">Réf: {{ product.sku }}</p>
-                        
+
+                        {# prix TTC calculé : HT * (1 + TVA) #}
                         <div class="d-flex justify-content-between align-items-center mt-auto">
                             <span class="h5 fw-extrabold mb-0 text-primary">
                                 {{ (product.prixHt * (1 + product.vatRate))|number_format(2, ',', ' ') }} €
@@ -44,6 +50,7 @@
                         </div>
                     </div>
 
+                    {# boutons : voir le detail ou ajouter au panier #}
                     <div class="card-footer bg-transparent border-0 p-4 pt-0">
                         <div class="d-flex gap-2">
                             <a href="{{ path('app_boutique_show', {id: product.id}) }}" class="btn btn-outline-primary flex-fill rounded-pill fw-bold py-2">
@@ -54,6 +61,7 @@
                                     <i class="bi bi-cart-plus me-1"></i> Ajouter
                                 </a>
                             {% else %}
+                                {# si stock = 0, bouton grisé #}
                                 <button class="btn btn-secondary flex-fill rounded-pill fw-bold py-2" disabled>
                                     Indisponible
                                 </button>

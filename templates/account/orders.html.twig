@@ -1,14 +1,16 @@
+{# page historique des commandes de l'utilisateur connecte #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Mes Commandes | ShoppingFree{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
+<div class="container mt-5" style="min-height: 65vh;">
     <div class="d-flex align-items-center mb-4">
         <i class="bi bi-bag-check fs-2 text-primary me-3"></i>
         <h1 class="h2 fw-bold m-0">Mon Historique d'Achats</h1>
     </div>
 
+    {# si pas encore de commandes on affiche un message #}
     {% if app.user.sales is empty %}
         <div class="card p-5 text-center shadow-sm">
             <i class="bi bi-emoji-frown fs-1 text-muted"></i>
@@ -16,6 +18,7 @@
             <a href="{{ path('app_home') }}" class="btn btn-primary btn-lg mt-2">Commencer mes achats</a>
         </div>
     {% else %}
+        {# tableau des ventes - on les affiche dans l'ordre inverse (plus recent en premier) #}
         <div class="table-responsive shadow-sm rounded-3 bg-body p-3">
             <table class="table table-hover align-middle">
                 <thead class="table-light">

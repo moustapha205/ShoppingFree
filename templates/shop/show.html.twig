@@ -1,3 +1,4 @@
+{# page detail d'un produit #}
 {% extends 'base.html.twig' %}
 
 {% block title %}ShoppingFree | {{ product.name }}{% endblock %}
@@ -5,6 +6,7 @@
 {% block body %}
 <div class="container py-5">
 
+    {# lien retour vers la liste des produits #}
     <a href="{{ path('app_home') }}" class="text-muted text-decoration-none small mb-4 d-inline-flex align-items-center gap-1">
         <i class="bi bi-chevron-left"></i> Retour aux produits
     </a>
@@ -20,11 +22,11 @@
                      style="max-height: 340px; object-fit: cover;">
             </div>
 
-            {# Colonne infos #}
+            {# Colonne infos produit #}
             <div class="col-md-7">
                 <div class="card-body p-4 p-lg-5 d-flex flex-column h-100">
 
-                    {# Catégorie + Stock #}
+                    {# badges : categorie + etat du stock #}
                     <div class="d-flex align-items-center gap-2 mb-3">
                         {% if product.category %}
                             <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 fw-semibold">
@@ -46,11 +48,11 @@
                         {% endif %}
                     </div>
 
-                    {# Nom #}
+                    {# Nom + reference #}
                     <h2 class="fw-bold mb-1">{{ product.name }}</h2>
                     <p class="text-muted small mb-3">Réf : {{ product.sku }}</p>
 
-                    {# Prix #}
+                    {# Prix TTC et HT avec taux de TVA #}
                     <div class="mb-3 p-3 bg-light rounded-3">
                         <div class="d-flex align-items-baseline gap-2">
                             <span class="fs-2 fw-bold text-primary">
@@ -65,7 +67,7 @@
                         </div>
                     </div>
 
-                    {# Description #}
+                    {# description optionnelle #}
                     {% if product.description %}
                         <div class="mb-4">
                             <p class="fw-semibold text-dark mb-1 small text-uppercase tracking-wide" style="letter-spacing: .08em;">Description</p>
@@ -74,7 +76,7 @@
                         </div>
                     {% endif %}
 
-                    {# Bouton #}
+                    {# bouton ajouter au panier, desactive si stock = 0 #}
                     <div class="mt-auto">
                         {% if product.quantity > 0 %}
                             <a href="{{ path('cart_add', {id: product.id}) }}" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow-sm">

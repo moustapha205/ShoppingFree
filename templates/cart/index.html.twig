@@ -1,9 +1,11 @@
+{# page panier - affiche les articles en session #}
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div class="container mt-5">
+<div class="container mt-5" style="min-height: 65vh;">
     <h1>Mon Panier 🛒</h1>
-    
+
+    {# si le panier a des articles on affiche le tableau, sinon un message vide #}
     {% if items | length > 0 %}
         <table class="table shadow-sm">
             <thead class="table-dark">
@@ -18,8 +20,10 @@
                 {% for item in items %}
                     <tr>
                         <td>{{ item.product.name }}</td>
+                        {# prix TTC = HT * (1 + taux TVA) #}
                         <td>{{ (item.product.prixHt * (1 + item.product.vatRate)) | number_format(2, ',', ' ') }} €</td>
                         <td>
+                            {# boutons pour baisser ou monter la quantite #}
                             <a href="{{ path('cart_decrease', {id: item.product.id}) }}" class="btn btn-sm btn-outline-secondary">−</a>
                             <span class="mx-2">{{ item.quantity }}</span>
                             <a href="{{ path('cart_increase', {id: item.product.id}) }}" class="btn btn-sm btn-outline-secondary">+</a>
@@ -29,7 +33,8 @@
                 {% endfor %}
             </tbody>
         </table>
-        
+
+        {# total general + bouton paiement Stripe #}
         <div class="text-end mt-4">
             <h3>Total Général : <span class="text-primary">{{ total | number_format(2, ',', ' ') }} €</span></h3>
             <a href="{{ path('cart_payment') }}" class="btn btn-success btn-lg px-5 shadow">
@@ -37,6 +42,7 @@
             </a>
         </div>
     {% else %}
+        {# panier vide #}
         <div class="alert alert-info py-4 text-center">
             <h3>Votre panier est vide.</h3>
             <a href="{{ path('app_home') }}" class="btn btn-primary mt-3">Retourner à la boutique</a>
